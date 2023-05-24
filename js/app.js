@@ -59,14 +59,20 @@ maximo.addEventListener('change', e => {
 
 transmision.addEventListener('change', e => {
     datosBusqueda.transmision = e.target.value;
+
+    filtrarAuto();
 });
 
 puertas.addEventListener('change', e => {
     datosBusqueda.puertas = e.target.value;
+
+    filtrarAuto();
 });
 
 color.addEventListener('change', e => {
     datosBusqueda.color = e.target.value;
+
+    filtrarAuto();
 });
 
 
@@ -111,12 +117,22 @@ function llenarSelect() {
 // funcion que filtra los autos
 // funcion de alto nivel - funcion que recibe como parametro otra funcion
 function filtrarAuto() {
-    const resultado = autos.filter( filtarMarca ).filter( filtrarYear ).filter( filtrarMinimo ).filter( filtrarMaximo );
+    const resultado = autos.filter( filtrarMarca )
+    .filter( filtrarYear )
+    .filter( filtrarMinimo )
+    .filter( filtrarMaximo )
+    .filter( filtrarPuertas )
+    .filter( filtrarTransmision )
+    .filter( filtrarColor ) ;
 
-    mostrarAutos(resultado);
+    if(resultado.length){
+        mostrarAutos(resultado);
+    } else {
+        noResultado();
+    }
 };
 
-function filtarMarca(auto) {
+function filtrarMarca(auto) {
     if(datosBusqueda.marca){
         return auto.marca === datosBusqueda.marca;
     }
@@ -142,4 +158,36 @@ function filtrarMaximo(auto) {
         return auto.precio <= datosBusqueda.maximo;
     }
     return auto;
+};
+
+function filtrarPuertas(auto) {
+    if(datosBusqueda.puertas){
+        return auto.puertas === parseInt(datosBusqueda.puertas);
+    }
+    return auto;
+};
+
+function filtrarTransmision(auto) {
+    if(datosBusqueda.transmision){
+        return auto.transmision === datosBusqueda.transmision;
+    }
+    return auto;
+};
+
+function filtrarColor(auto) {
+    if(datosBusqueda.color){
+        return auto.color === datosBusqueda.color;
+    }
+    return auto;
+};
+
+// funcion que ejecuta un mensaje de no resultados
+function noResultado(){
+
+    limpiarHTML();
+
+    const noResultado = document.createElement('div');
+    noResultado.classList.add('alerta', 'error');
+    noResultado.textContent = 'No hay resultados de la busqueda, intenta con otros terminos de busqueda';
+    resultado.appendChild(noResultado);
 };
